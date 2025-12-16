@@ -1,0 +1,12 @@
+import { defineConfig } from "drizzle-kit";
+
+process.loadEnvFile();
+
+export default defineConfig({
+  schema: "src/lib/db/schema.ts",
+  out: "src/lib/db/migrations",
+  dialect: "postgresql",
+  dbCredentials: {
+    url: process.env["DB_URL"] || "",
+  },
+});
