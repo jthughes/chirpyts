@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import { BadRequestError } from "./middleware.js";
+
 import { respondWithJSON } from "./json.js";
 import { createUser } from "../lib/db/queries/users.js";
+import { BadRequestError } from "./error.js";
 
 export async function handlerUsers(
   req: Request,

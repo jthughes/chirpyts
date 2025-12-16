@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { config } from "../config.js";
 import { respondWithError } from "./json.js";
+import {
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+} from "./error.js";
 
 export async function middlewareLogging(
   req: Request,
@@ -24,34 +30,6 @@ export async function middlewareMetricsInc(
 ) {
   config.fileserverHits += 1;
   next();
-}
-
-export class BadRequestError extends Error {
-  status: number = 400;
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export class UnauthorizedError extends Error {
-  status: number = 401;
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export class ForbiddenError extends Error {
-  status: number = 403;
-  constructor(message: string) {
-    super(message);
-  }
-}
-
-export class NotFoundError extends Error {
-  status: number = 404;
-  constructor(message: string) {
-    super(message);
-  }
 }
 
 export async function middlewareError(

@@ -1,15 +1,21 @@
 import type { Request, Response, NextFunction } from "express";
 
-import { respondWithError, respondWithJSON } from "./json.js";
-import { BadRequestError } from "./middleware.js";
+import { respondWithJSON } from "./json.js";
+import {
+  createChirp,
+  getAllChirps,
+  getChirpByID,
+} from "../lib/db/queries/chirps.js";
+import { BadRequestError, NotFoundError } from "./error.js";
 
-export async function handlerValidateChirp(
+export async function handlerChirpsAddNew(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
   type parameters = {
     body: string;
+    userId: string;
   };
 
   const params: parameters = req.body;
@@ -18,14 +24,45 @@ export async function handlerValidateChirp(
   if (params.body.length > maxChirpLength) {
     throw new BadRequestError("Chirp is too long. Max length is 140");
   }
-  const filter = ["kerfuffle", "sharbert", "fornax"];
-  const input = params.body.split(" ");
 
-  for (let i = 0; i < input.length; i++) {
-    if (filter.includes(input[i].toLowerCase())) {
-      input[i] = "****";
-    }
+  const chirp = await createChirp(params.body, params.userId);
+  if (chirp == undefined) {
+    throw new BadRequestError("Chirp not created");
   }
-  const output = input.join(" ");
-  respondWithJSON(res, 200, { cleanedBody: output });
+
+  respondWithJSON(res, 201, {
+    id: chirp.id,
+    userId: chirp.user_id,
+    body: chirp.body,
+  });
+}
+
+export async function handlerChirpsGetAll(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const chirps = await getAllChirps();
+  if (chirps == undefined) {
+    throw new Error("Failed");
+  }
+
+  respondWithJSON(res, 200, chirps);
+}
+
+export async function handlerChirpGetByID(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const chirpID = req.params.chirpID;
+  console.log(`url parameter: chirpID = ${chirpID}`);
+  const chirp = await getChirpByID(chirpID);
+  if (chirp == undefined) {
+    throw new Error("Failed");
+  } else if (chirp.length == 0) {
+    throw new NotFoundError("Chirp not found");
+  }
+
+  respondWithJSON(res, 200, chirp[0]);
 }

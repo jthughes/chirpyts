@@ -1,8 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import { config } from "../config.js";
 import { deleteAllUsers } from "../lib/db/queries/users.js";
-import { ForbiddenError } from "./middleware.js";
+
 import { respondWithJSON } from "./json.js";
+import { ForbiddenError } from "./error.js";
 
 export async function handlerAdminReset(
   req: Request,
