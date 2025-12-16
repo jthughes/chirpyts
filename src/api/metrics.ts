@@ -15,14 +15,3 @@ export async function handlerMetrics(
   </html>`);
   res.status(200);
 }
-
-export async function handlerMetricsReset(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  res.set("Content-Type", "text/plain; charset=utf-8");
-  res.send(`Hits: 0`);
-  config.fileserverHits = 0;
-  res.status(200);
-}

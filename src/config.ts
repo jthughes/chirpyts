@@ -5,6 +5,7 @@ process.loadEnvFile();
 export type APIConfig = {
   fileserverHits: number;
   db: DBConfig;
+  platform: string;
 };
 
 export type DBConfig = {
@@ -17,9 +18,10 @@ export const config: APIConfig = {
   db: {
     url: envOrThrow("DB_URL"),
     migrationConfig: {
-      migrationsFolder: "./src/db/migrations",
+      migrationsFolder: "./src/lib/db/migrations",
     },
   },
+  platform: envOrThrow("PLATFORM"),
 };
 
 export function envOrThrow(key: string) {
