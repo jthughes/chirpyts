@@ -6,6 +6,7 @@ export type APIConfig = {
   fileserverHits: number;
   db: DBConfig;
   platform: string;
+  jwtSecret: string;
 };
 
 export type DBConfig = {
@@ -22,6 +23,7 @@ export const config: APIConfig = {
     },
   },
   platform: envOrThrow("PLATFORM"),
+  jwtSecret: envOrThrow("JWT_SECRET"),
 };
 
 export function envOrThrow(key: string) {

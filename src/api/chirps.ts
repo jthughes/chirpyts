@@ -6,16 +6,20 @@ import {
   getAllChirps,
   getChirpByID,
 } from "../lib/db/queries/chirps.js";
-import { BadRequestError, NotFoundError } from "./error.js";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "./error.js";
+import { getBearerToken, validateJWT } from "./auth.js";
+import { config } from "../config.js";
 
 export async function handlerChirpsAddNew(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
+  const tokenString = getBearerToken(req);
+  const userID = validateJWT(tokenString, config.jwtSecret);
+
   type parameters = {
     body: string;
-    userId: string;
   };
 
   const params: parameters = req.body;
@@ -25,7 +29,7 @@ export async function handlerChirpsAddNew(
     throw new BadRequestError("Chirp is too long. Max length is 140");
   }
 
-  const chirp = await createChirp(params.body, params.userId);
+  const chirp = await createChirp(params.body, userID);
   if (chirp == undefined) {
     throw new BadRequestError("Chirp not created");
   }

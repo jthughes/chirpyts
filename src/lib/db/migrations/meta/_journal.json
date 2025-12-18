@@ -15,6 +15,13 @@
       "when": 1765861218708,
       "tag": "0001_tiresome_smasher",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766012679161,
+      "tag": "0002_tired_magdalene",
+      "breakpoints": true
     }
   ]
 }
