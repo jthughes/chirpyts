@@ -6,6 +6,7 @@ import {
   unique,
   varchar,
 } from "drizzle-orm/pg-core";
+import { create } from "node:domain";
 
 export type User = typeof users.$inferSelect;
 
@@ -33,4 +34,18 @@ export const chirps = pgTable("chirps", {
   user_id: uuid("user_id")
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
+});
+
+export const refreshTokens = pgTable("refresh_tokens", {
+  token: text("token").primaryKey().notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+  user_id: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  expires_at: timestamp("expires_at").notNull(),
+  revoked_at: timestamp("revoked_at"),
 });

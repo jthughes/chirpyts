@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { BadRequestError, UnauthorizedError } from "./error.js";
 import { Request } from "express";
 
+import crypto from "node:crypto";
+
 export async function hashPassword(password: string): Promise<string> {
   const hash = await argon2.hash(password);
   return hash;
@@ -66,4 +68,10 @@ export function getBearerToken(req: Request): string {
     throw new BadRequestError("invalid Authorization format");
   }
   return authHeaderComponents[1];
+}
+
+export function makeRefreshToken(): string {
+  const token = crypto.randomBytes(32);
+  const tokenString = token.toString("hex");
+  return tokenString;
 }

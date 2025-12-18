@@ -21,6 +21,8 @@ import {
   handlerChirpsGetAll,
 } from "./api/chirps.js";
 import { handlerLogin } from "./api/login.js";
+import { handlerRefresh } from "./api/refresh.js";
+import { handlerRevoke } from "./api/revoke.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -49,6 +51,12 @@ app.post("/api/users", (req, res, next) => {
 });
 app.post("/api/login", (req, res, next) => {
   Promise.resolve(handlerLogin(req, res, next)).catch(next);
+});
+app.post("/api/refresh", (req, res, next) => {
+  Promise.resolve(handlerRefresh(req, res, next)).catch(next);
+});
+app.post("/api/revoke", (req, res, next) => {
+  Promise.resolve(handlerRevoke(req, res, next)).catch(next);
 });
 
 app.post("/api/chirps", (req, res, next) => {

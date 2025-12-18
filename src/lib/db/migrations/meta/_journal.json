@@ -22,6 +22,20 @@
       "when": 1766012679161,
       "tag": "0002_tired_magdalene",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1766032037238,
+      "tag": "0003_yielding_talkback",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1766036800924,
+      "tag": "0004_optimal_bushwacker",
+      "breakpoints": true
     }
   ]
 }
