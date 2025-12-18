@@ -5,6 +5,7 @@ import {
   createChirp,
   deleteChirpByID,
   getAllChirps,
+  getAllChirpsByAuthorID,
   getChirpByID,
 } from "../lib/db/queries/chirps.js";
 import {
@@ -55,7 +56,29 @@ export async function handlerChirpsGetAll(
   res: Response,
   next: NextFunction,
 ) {
-  const chirps = await getAllChirps();
+  let authorId = "";
+  let authorIdQuery = req.query.authorId;
+  if (typeof authorIdQuery === "string") {
+    authorId = authorIdQuery;
+  }
+
+  let sortDesc = false;
+  let sortDirQuery = req.query.sort;
+  if (typeof sortDirQuery === "string" && sortDirQuery == "desc") {
+    sortDesc = true;
+  }
+
+  if (authorId == "") {
+    const chirps = await getAllChirps(sortDesc);
+    if (chirps == undefined) {
+      throw new Error("Failed");
+    }
+
+    respondWithJSON(res, 200, chirps);
+    return;
+  }
+
+  const chirps = await getAllChirpsByAuthorID(authorId, sortDesc);
   if (chirps == undefined) {
     throw new Error("Failed");
   }

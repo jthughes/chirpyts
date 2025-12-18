@@ -70,6 +70,9 @@ app.post("/api/chirps", (req, res, next) => {
 app.get("/api/chirps", (req, res, next) => {
   Promise.resolve(handlerChirpsGetAll(req, res, next)).catch(next);
 });
+app.get("/api/chirps/:authorId", (req, res, next) => {
+  Promise.resolve(handlerChirpsGetAll(req, res, next)).catch(next);
+});
 app.get("/api/chirps/:chirpID", (req, res, next) => {
   Promise.resolve(handlerChirpGetByID(req, res, next)).catch(next);
 });
