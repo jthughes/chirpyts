@@ -3,20 +3,29 @@ import type { Request, Response, NextFunction } from "express";
 import { respondWithJSON } from "./json.js";
 import {
   createChirp,
+  deleteChirpByID,
   getAllChirps,
   getChirpByID,
 } from "../lib/db/queries/chirps.js";
-import { BadRequestError, NotFoundError, UnauthorizedError } from "./error.js";
-import { getBearerToken, validateJWT } from "./auth.js";
-import { config } from "../config.js";
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError,
+} from "./error.js";
+import { fakeMiddlewareAuth } from "./middleware.js";
 
 export async function handlerChirpsAddNew(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const tokenString = getBearerToken(req);
-  const userID = validateJWT(tokenString, config.jwtSecret);
+  let userID: string;
+  try {
+    userID = fakeMiddlewareAuth(req);
+  } catch {
+    throw new UnauthorizedError("failed to authenticate user");
+  }
 
   type parameters = {
     body: string;
@@ -63,10 +72,39 @@ export async function handlerChirpGetByID(
   console.log(`url parameter: chirpID = ${chirpID}`);
   const chirp = await getChirpByID(chirpID);
   if (chirp == undefined) {
-    throw new Error("Failed");
-  } else if (chirp.length == 0) {
     throw new NotFoundError("Chirp not found");
   }
 
-  respondWithJSON(res, 200, chirp[0]);
+  respondWithJSON(res, 200, chirp);
+}
+
+export async function handlerDeleteChirp(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  let userID: string;
+  try {
+    userID = fakeMiddlewareAuth(req);
+  } catch (err) {
+    if (err instanceof UnauthorizedError) {
+      throw new ForbiddenError("failed to authenticate user");
+    } else {
+      throw new UnauthorizedError("invalid auth header");
+    }
+    console.log(err);
+  }
+
+  const chirpID = req.params.chirpID;
+
+  const chirp = await getChirpByID(chirpID);
+  if (chirp == undefined) {
+    throw new NotFoundError("chirp not found");
+  }
+  if (chirp.user_id !== userID) {
+    throw new ForbiddenError("user does not own chirp");
+  }
+  await deleteChirpByID(chirpID);
+
+  res.status(204).send();
 }

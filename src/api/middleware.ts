@@ -7,6 +7,7 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "./error.js";
+import { getBearerToken, validateJWT } from "./auth.js";
 
 export async function middlewareLogging(
   req: Request,
@@ -49,4 +50,10 @@ export async function middlewareError(
     console.log(err);
     respondWithError(res, 500, "Internal Server Error");
   }
+}
+
+export function fakeMiddlewareAuth(req: Request): string {
+  const tokenString = getBearerToken(req);
+  const userID = validateJWT(tokenString, config.jwtSecret);
+  return userID;
 }

@@ -13,12 +13,13 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 
 import { config } from "./config.js";
-import { handlerUsers } from "./api/users.js";
+import { handlerUpdateUser, handlerUsers } from "./api/users.js";
 import { handlerAdminReset } from "./api/admin.js";
 import {
   handlerChirpGetByID,
   handlerChirpsAddNew,
   handlerChirpsGetAll,
+  handlerDeleteChirp,
 } from "./api/chirps.js";
 import { handlerLogin } from "./api/login.js";
 import { handlerRefresh } from "./api/refresh.js";
@@ -49,6 +50,9 @@ app.post("/admin/reset", (req, res, next) => {
 app.post("/api/users", (req, res, next) => {
   Promise.resolve(handlerUsers(req, res, next)).catch(next);
 });
+app.put("/api/users", (req, res, next) => {
+  Promise.resolve(handlerUpdateUser(req, res, next)).catch(next);
+});
 app.post("/api/login", (req, res, next) => {
   Promise.resolve(handlerLogin(req, res, next)).catch(next);
 });
@@ -67,6 +71,9 @@ app.get("/api/chirps", (req, res, next) => {
 });
 app.get("/api/chirps/:chirpID", (req, res, next) => {
   Promise.resolve(handlerChirpGetByID(req, res, next)).catch(next);
+});
+app.delete("/api/chirps/:chirpID", (req, res, next) => {
+  Promise.resolve(handlerDeleteChirp(req, res, next)).catch(next);
 });
 app.use(middlewareError);
 
