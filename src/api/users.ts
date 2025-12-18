@@ -43,6 +43,7 @@ export async function handlerUsers(
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     email: user.email,
+    isChirpyRed: user.isChirpyRed,
   };
 
   respondWithJSON(res, 201, responseUser);
@@ -87,6 +88,7 @@ export async function handlerUpdateUser(
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     email: user.email,
+    isChirpyRed: user.isChirpyRed,
   };
 
   respondWithJSON(res, 200, responseUser);

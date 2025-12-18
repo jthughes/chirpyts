@@ -55,6 +55,7 @@ export async function handlerLogin(
     email: user.email,
     token: token,
     refreshToken: refreshToken,
+    isChirpyRed: user.isChirpyRed,
   };
 
   respondWithJSON(res, 200, responseUser);

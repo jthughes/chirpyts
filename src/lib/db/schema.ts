@@ -3,10 +3,9 @@ import {
   timestamp,
   uuid,
   text,
-  unique,
   varchar,
+  boolean,
 } from "drizzle-orm/pg-core";
-import { create } from "node:domain";
 
 export type User = typeof users.$inferSelect;
 
@@ -21,6 +20,7 @@ export const users = pgTable("users", {
     .$onUpdate(() => new Date()),
   email: varchar("email", { length: 256 }).notNull().unique(),
   hashedPassword: varchar("hashed_password").notNull().default("unset"),
+  isChirpyRed: boolean("is_chirpy_red").notNull().default(false),
 });
 
 export const chirps = pgTable("chirps", {

@@ -7,6 +7,7 @@ export type APIConfig = {
   db: DBConfig;
   platform: string;
   jwtSecret: string;
+  polkaSecret: string;
 };
 
 export type DBConfig = {
@@ -24,12 +25,13 @@ export const config: APIConfig = {
   },
   platform: envOrThrow("PLATFORM"),
   jwtSecret: envOrThrow("JWT_SECRET"),
+  polkaSecret: envOrThrow("POLKA_SECRET"),
 };
 
 export function envOrThrow(key: string) {
   const item = process.env[key];
   if (item === undefined) {
-    throw new Error("DB_URL not found");
+    throw new Error(`${key} not found`);
   }
   return item;
 }

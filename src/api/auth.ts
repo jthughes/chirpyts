@@ -75,3 +75,18 @@ export function makeRefreshToken(): string {
   const tokenString = token.toString("hex");
   return tokenString;
 }
+
+export function getAPIKey(req: Request): string {
+  const authHeader = req.get("Authorization");
+  if (authHeader == undefined) {
+    throw new UnauthorizedError("missing Authorization header");
+  }
+  const authHeaderComponents = authHeader.split(" ");
+  if (
+    authHeaderComponents.length !== 2 &&
+    authHeaderComponents[0] !== "ApiKey"
+  ) {
+    throw new UnauthorizedError("invalid Authorization format");
+  }
+  return authHeaderComponents[1];
+}
